@@ -1,10 +1,22 @@
-name: Hello World
+name: Deploy to Firebase Hosting
 
 on:
   workflow_dispatch:
 
 jobs:
-  say_hello:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello World!"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}" # GitHub Actionsが自動で設定
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" # 自分でGitHub Secretsに設定
